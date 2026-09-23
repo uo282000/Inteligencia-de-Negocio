@@ -30,24 +30,25 @@ modelos = {
     ),
     # Código incompleto
     "SVR": make_pipeline(
-        SelectKBest(...),
+        SelectKBest(score_func=f_regression, k=2),
         StandardScaler(),
         SVR(...),
     ),
     # Código incompleto
     "Bosque": make_pipeline(
-        SelectKBest(...),
+        SelectKBest(score_func=f_regression, k=2),
         RandomForestRegressor(...),
     ),
 }
 
 # %% Validación cruzada con las mismas particiones
-particiones = KFold(n_splits=10, shuffle=True, random_state=42)
+particiones = KFold(n_splits=10, shuffle=True, random_state=42) #lo mezcla con shuffle
 predicciones = {}
 filas = []
 for nombre, modelo in modelos.items():
     scores = cross_val_score(
         modelo, X, y, scoring="neg_mean_squared_error", cv=particiones
+
     )
     prediccion = cross_val_predict(modelo, X, y, cv=particiones)
     predicciones[nombre] = prediccion
