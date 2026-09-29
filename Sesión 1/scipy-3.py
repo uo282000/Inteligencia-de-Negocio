@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import ttest_1samp
+from scipy.stats import wilcoxon
 
 derecha = np.array([
     113, 105, 130, 101, 138, 118, 87, 116, 75, 96,
@@ -28,3 +29,11 @@ if resultado.pvalue < 0.05:
     print("Rechazamos H0: hay evidencia de una diferencia media.")
 else:
     print("No rechazamos H0: la evidencia no es suficiente.")
+
+resultado_wilcoxon = wilcoxon(diferencias)
+print(f"Wilcoxon p = {resultado_wilcoxon.pvalue:.4f}")
+
+if resultado_wilcoxon.pvalue < 0.05:
+    print("Wilcoxon: Rechazamos H0 (hay diferencia media).")
+else:
+    print("Wilcoxon: No rechazamos H0.")

@@ -9,6 +9,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
+from sklearn.feature_selection import SelectKBest, f_regression
 
 CARPETA = Path(__file__).resolve().parent
 FIGURAS = CARPETA / "figuras"
@@ -27,10 +28,22 @@ y = datos["MEDV"].to_numpy()
 print(X.shape)
 print(y.shape)
 
+k_variables = 5
+
 modelos = {
-    "Lineal": LinearRegression(),
-    "SVR": make_pipeline(StandardScaler(), SVR(kernel="rbf", C=10, epsilon=1)),
-    "Bosque": RandomForestRegressor(n_estimators=300, random_state=42),
+    "Lineal": make_pipeline(
+        SelectKBest(score_func=f_regression, k=k_variables),
+        LinearRegression()
+    ),
+    "SVR": make_pipeline(
+        SelectKBest(score_func=f_regression, k=k_variables),
+        StandardScaler(),
+        SVR(kernel="poly", C=100, epsilon=1) 
+    ),
+    "Bosque": make_pipeline(
+        SelectKBest(score_func=f_regression, k=k_variables),
+        RandomForestRegressor(n_estimators=300, random_state=42)
+    ),
 }
 predicciones = {}
 for nombre, modelo in modelos.items():

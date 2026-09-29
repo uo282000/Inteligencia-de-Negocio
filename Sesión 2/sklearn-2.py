@@ -30,14 +30,14 @@ modelos = {
     ),
     # Código incompleto
     "SVR": make_pipeline(
-        SelectKBest(score_func=f_regression, k=2),
+        SelectKBest(score_func=f_regression, k=1),
         StandardScaler(),
-        SVR(...),
+        SVR(kernel="rbf", C=10, epsilon=1),
     ),
     # Código incompleto
     "Bosque": make_pipeline(
-        SelectKBest(score_func=f_regression, k=2),
-        RandomForestRegressor(...),
+        SelectKBest(score_func=f_regression, k=1),
+        RandomForestRegressor(n_estimators=300, random_state=42),
     ),
 }
 
@@ -64,5 +64,18 @@ resultados = pd.DataFrame(filas).set_index("modelo")
 print(resultados.round(3))
 
 # %% Predicciones de validación cruzada ordenadas por el precio observado
+orden_y = np.argsort(y)
+rango = np.arange(y.size)
 
+fig, ejes = plt.subplots(1, 3, figsize=(13, 4), sharey=True)
+for eje, (nombre, prediccion) in zip(ejes, predicciones.items()):
+    eje.plot(rango, y[orden_y], color="black", linewidth=1.5, label="Observado")
+    eje.scatter(rango, prediccion[orden_y], s=9, alpha=0.75, label=nombre)
+    eje.set_title(nombre)
+    eje.set_xlabel("Rango por MEDV observado")
+ejes[0].set_ylabel("MEDV")
+ejes[0].legend()
+fig.suptitle("Predicciones de validación cruzada")
+plt.tight_layout(rect=[0, 0, 1, 0.92])
+plt.show()
 # Código incompleto
