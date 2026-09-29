@@ -27,7 +27,7 @@ X = datos.drop(columns="MEDV")
 y = datos["MEDV"].to_numpy()
 print(X.shape)
 print(y.shape)
-
+ 
 k_variables = 5
 
 modelos = {
