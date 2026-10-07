@@ -132,8 +132,22 @@ mostrar([
 # trimestre, retirada = 1 - (saldo_actual + 100) / (saldo_hace_3m + 100), con los valores negativos y vacíos
 # sustituidos por 0. Compárala con la regla actual y con el modelo inicial.
 
+def regla_nueva(D):
+    # Calculamos la retirada
+    retirada = 1 - (D["saldo_actual"] + 100) / (D["saldo_hace_3m"] + 100)
+    # Sustituimos vacíos y negativos por 0
+    retirada_limpia = retirada.fillna(0).clip(lower=0)
+    # Sumamos el doble de la retirada a la regla actual
+    return regla_actual(D) + (2 * retirada_limpia)
+
+mostrar([
+    evaluar_regla("Regla actual", regla_actual, X_train, y_train),
+    evaluar_regla("Regla nueva (con saldo)", regla_nueva, X_train, y_train),
+    validar("Modelo inicial", modelo_lr(), X_train, y_train),
+])
+
 # RESPUESTA (¿supera al modelo inicial? ¿qué implica para la decisión de usar un modelo?):
-#
+# Sí supero al módelo inicial
 
 
 # %% [markdown]
@@ -161,9 +175,14 @@ mostrar([
 # Comprueba que cliente_activo coincide siempre con su regla del diccionario 
 # (vuelve a la celda markdown con título "Datos" para ver esa "regla del banco").
 
+regla_banco = (X_train["transacciones_mes"] >= 10) | (X_train["accesos_app_mes"] >= 6)
+coincide = (regla_banco.astype(int) == X_train["cliente_activo"]).all()
+print(f"¿Coincide cliente_activo exactamente con la regla?: {coincide}")
+
+
 # RESPUESTA (¿qué columnas retirarías y por qué? ¿por qué no saldo_hace_3m, pese a su correlación con
 # saldo_actual? ¿por qué la correlación no revela que cliente_activo es redundante?):
-#
+#Quitaria anio_nacimiento ya que tiene correlación directa con edad
 
 
 # %% Columnas que se conservan
