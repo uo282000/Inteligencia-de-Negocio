@@ -25,18 +25,16 @@ y = datos["MEDV"].to_numpy()
 
 modelos = {
     "Lineal": make_pipeline(
-        SelectKBest(score_func=f_regression, k=1), 
+        SelectKBest(score_func=f_regression, k="all"), 
         LinearRegression()
     ),
-    # Código incompleto
     "SVR": make_pipeline(
-        SelectKBest(score_func=f_regression, k=1),
+        SelectKBest(score_func=f_regression, k="all"),
         StandardScaler(),
         SVR(kernel="rbf", C=10, epsilon=1),
     ),
-    # Código incompleto
     "Bosque": make_pipeline(
-        SelectKBest(score_func=f_regression, k=1),
+        SelectKBest(score_func=f_regression, k="all"),
         RandomForestRegressor(n_estimators=300, random_state=42),
     ),
 }
@@ -78,4 +76,3 @@ ejes[0].legend()
 fig.suptitle("Predicciones de validación cruzada")
 plt.tight_layout(rect=[0, 0, 1, 0.92])
 plt.show()
-# Código incompleto
